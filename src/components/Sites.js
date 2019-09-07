@@ -21,7 +21,8 @@ class Sites extends Component {
           return (
             <div className="flex flex-wrap">
               {data.sites.map((site) => {
-                return <div key={site.id} className="w-full site-entry">
+                return <div key={site.id} className="w-full site-entry"
+                        onClick={this.props.selectSite.bind(this, site)}>>
                     <div className="font-bold text-xl mb-2">{site.name}</div>
                 </div>
               })}
