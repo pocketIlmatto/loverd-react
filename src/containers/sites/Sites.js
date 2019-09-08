@@ -20,13 +20,25 @@ const GET_SITES = gql`
   }
 `;
 
-class Sites extends Component {
-  state = {
-    parameterType: "current_temp"
-  };
+// TODO: Eventually might want to gracefully skip depricated viewTypes based on
+// querying the server in case deprication is not also fixed here manually
+export const viewTypeMap = {
+  current_temp: ['line', 'Current T'],
+  current_pressure: ['line', 'Current P'],
+  current_wind_speed: ['bar', 'Current WS'],
+  fct_temp: ['line', 'Fct T'],
+  fct_pressure: ['line', 'Fct P'],
+  fct_wind_speed: ['bar', 'Fct WS'],
+  flyability_score: ['bar', 'Flyability']
+}
 
+class Sites extends Component {
   render() {
-    const { parameterType } = this.state;
+    let parameterType = this.props.selectedView;
+    let chartType = '';
+    if (parameterType !== '') {
+      chartType = viewTypeMap[parameterType][0];
+    }
 
     return (
       <Query query={GET_SITES} variables={{ parameterType }}>
@@ -35,7 +47,7 @@ class Sites extends Component {
           if (error) return <div>Error!</div>
           return (
             <div className="flex flex-wrap sites-list">
-              {data.sites.map((site) => { return <SiteRow site={site}/>})}
+              {data.sites.map((site) => { return <SiteRow site={site} key={site.id} chartType={chartType} /> } )}
             </div>
           )
         }}

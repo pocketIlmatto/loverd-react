@@ -1,11 +1,26 @@
 import React, { Component } from 'react';
 import SparkLineChart from '../../components/SparkLineChart';
+import SparkBarChart from '../../components/SparkBarChart';
 
 class SiteRow extends Component {
 
+  buildChart(chartType, chartData) {
+    switch(chartType) {
+      case 'line':
+        return (<SparkLineChart data={chartData} color={'#70cad1'}/>)
+        break;
+      case 'bar':
+        return (<SparkBarChart data={chartData} color={'#70cad1'}/>)
+        break;
+      default:
+        return (<SparkLineChart data={chartData} color={'#70cad1'}/>)
+      }
+  }
+  
   render() {
-    const { site } = this.props;
+    const { chartType, site } = this.props;
     const chartData = site.filteredSiteData.map(d => d.value);
+    const chart = this.buildChart(chartType, chartData);
 
     return (
       <div key={site.id} className="w-full site-entry-row-container">
@@ -14,7 +29,7 @@ class SiteRow extends Component {
             {site.name}
           </div>
           <div className="w-1/2 mb-1 site-chart" key={'cjs-' + site.id}>
-            <SparkLineChart data={chartData} color={'#70cad1'}/>
+            {chart}
           </div>
         </div>
         <hr/>
