@@ -8,15 +8,13 @@ class SiteRow extends Component {
     switch(chartType) {
       case 'line':
         return (<SparkLineChart data={chartData} color={'#70cad1'}/>)
-        break;
       case 'bar':
         return (<SparkBarChart data={chartData} color={'#70cad1'}/>)
-        break;
       default:
         return (<SparkLineChart data={chartData} color={'#70cad1'}/>)
       }
   }
-  
+
   render() {
     const { chartType, site } = this.props;
     const chartData = site.filteredSiteData.map(d => d.value);
