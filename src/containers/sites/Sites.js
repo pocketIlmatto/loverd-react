@@ -15,6 +15,7 @@ const GET_SITES = gql`
         value
         unit
         timestamp
+        forecastModel
       }
     }
   }
@@ -23,21 +24,21 @@ const GET_SITES = gql`
 // TODO: Eventually might want to gracefully skip depricated viewTypes based on
 // querying the server in case deprication is not also fixed here manually
 export const viewTypeMap = {
-  current_temp: ['line', 'Current T'],
-  current_pressure: ['line', 'Current P'],
-  current_wind_speed: ['bar', 'Current WS'],
-  fct_temp: ['line', 'Fct T'],
-  fct_pressure: ['line', 'Fct P'],
-  fct_wind_speed: ['bar', 'Fct WS'],
-  flyability_score: ['bar', 'Flyability']
+  current_temp: [{chartType: 'line', displayLegend: false}, 'Current T'],
+  current_pressure: [{chartType: 'line', displayLegend: false}, 'Current P'],
+  current_wind_speed: [{chartType: 'bar', displayLegend: false}, 'Current WS'],
+  fct_temp: [{chartType: 'line', displayLegend: true}, 'Fct T'],
+  fct_pressure: [{chartType: 'line', displayLegend: true}, 'Fct P'],
+  fct_wind_speed: [{chartType: 'bar', displayLegend: true}, 'Fct WS'],
+  flyability_score: [{chartType: 'bar', displayLegend: false}, 'Flyability']
 }
 
 class Sites extends Component {
   render() {
     let parameterType = this.props.selectedView;
-    let chartType = '';
+    let chartOptions = {};
     if (parameterType !== '') {
-      chartType = viewTypeMap[parameterType][0];
+      chartOptions = viewTypeMap[parameterType][0];
     }
 
     return (
@@ -47,7 +48,7 @@ class Sites extends Component {
           if (error) return <div>Error!</div>
           return (
             <div className="flex flex-wrap sites-list">
-              {data.sites.map((site) => { return <SiteRow site={site} key={site.id} chartType={chartType} /> } )}
+              {data.sites.map((site) => { return <SiteRow site={site} key={site.id} chartOptions={chartOptions} /> } )}
             </div>
           )
         }}

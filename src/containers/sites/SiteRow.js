@@ -1,33 +1,33 @@
 import React, { Component } from 'react';
-import SparkLineChart from '../../components/SparkLineChart';
-import SparkBarChart from '../../components/SparkBarChart';
+import SparkMultiChart from '../../components/SparkMultiChart';
 
 class SiteRow extends Component {
 
-  buildChart(chartType, chartData) {
-    switch(chartType) {
-      case 'line':
-        return (<SparkLineChart data={chartData} color={'#70cad1'}/>)
-      case 'bar':
-        return (<SparkBarChart data={chartData} color={'#70cad1'}/>)
-      default:
-        return (<SparkLineChart data={chartData} color={'#70cad1'}/>)
+  buildChartData(siteData) {
+    let chartData = {}
+    for (var i = 0; i < siteData.length ; i++) {
+      const groupBy = siteData[i].forecastModel || 'none';
+      if (groupBy in chartData) {
+        chartData[groupBy].push(siteData[i].value)
+      } else {
+        chartData[groupBy] = [siteData[i].value]
       }
+    }
+    return chartData;
   }
 
   render() {
-    const { chartType, site } = this.props;
-    const chartData = site.filteredSiteData.map(d => d.value);
-    const chart = this.buildChart(chartType, chartData);
+    const { chartOptions, site } = this.props;
+    const chartData = this.buildChartData(site.filteredSiteData);
 
     return (
       <div key={site.id} className="w-full site-entry-row-container">
         <div className="flex site-entry-row">
-          <div className="font-bold text-xl mb-2 w-1/2 site-name">
+          <div className="font-bold text-xl mt-2 mb-2 w-1/2 site-name">
             {site.name}
           </div>
-          <div className="w-1/2 mb-1 site-chart" key={'cjs-' + site.id}>
-            {chart}
+          <div className="w-1/2 m-8 site-chart" key={'cjs-' + site.id}>
+            <SparkMultiChart chartOptions={chartOptions} data={chartData} />
           </div>
         </div>
         <hr/>
